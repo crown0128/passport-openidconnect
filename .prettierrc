@@ -1,0 +1,32 @@
+{
+    "arrowParens": "avoid",
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "bracketSameLine": false,
+    "tabWidth": 4,
+    "quoteProps": "consistent",
+    "printWidth": 80,
+    "useTabs": false,
+    "trailingComma": "es5",
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+            "options": {
+                "singleQuote": false
+            }
+        },
+        {
+            "files": ["*.yml", "*.yaml"],
+            "options": {
+                "tabWidth": 2
+            }
+        },
+        {
+            "files": ["*.md"],
+            "options": {
+                "proseWrap": "never",
+                "tabWidth": 2
+            }
+        }
+    ]
+}
