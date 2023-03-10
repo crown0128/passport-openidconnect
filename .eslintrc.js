@@ -1,6 +1,7 @@
 module.exports = {
     root: true,
     env: {
+        chai: true,
         es6: true,
         mocha: true,
         node: true,
