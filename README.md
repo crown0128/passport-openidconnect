@@ -41,6 +41,7 @@ passport.use(
       clientID: process.env["CLIENT_ID"],
       clientSecret: process.env["CLIENT_SECRET"],
       callbackURL: "https://client.example.org/cb",
+      pkce: "S256",
     },
     function verify(issuer, profile, cb) {
       db.get(
