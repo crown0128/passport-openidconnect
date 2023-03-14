@@ -26,7 +26,6 @@
         "test": "mocha --require ./test/bootstrap/node --recursive"
     },
     "dependencies": {
-        "lodash": "^4.17.21",
         "oauth": "~0.9.0",
         "passport-strategy": "^1.0.0"
     },
