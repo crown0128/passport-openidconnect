@@ -38,6 +38,7 @@ describe("SessionStore", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
+                            state: {},
                         },
                     });
 
@@ -77,6 +78,7 @@ describe("SessionStore", function () {
                         returnTo: "https://client.example.org/app",
                         state: {
                             handle: state,
+                            state: {},
                         },
                     });
                     done();
@@ -115,6 +117,7 @@ describe("SessionStore", function () {
                         {
                             state: {
                                 handle: state,
+                                state: {},
                             },
                         }
                     );

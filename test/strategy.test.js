@@ -63,6 +63,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -101,6 +102,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -142,6 +144,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -181,6 +184,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -220,6 +224,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -259,6 +264,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -298,6 +304,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -337,6 +344,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -376,6 +384,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -415,6 +424,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -454,6 +464,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -493,6 +504,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -534,6 +546,7 @@ describe("Strategy", function () {
                     handle: state,
                     maxAge: 86400,
                     issued: new Date("2011-07-21T20:42:50.000Z"),
+                    state: {},
                 });
                 done();
             })
@@ -573,6 +586,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -612,6 +626,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -655,6 +670,7 @@ describe("Strategy", function () {
                 ).to.deep.equal({
                     handle: state,
                     nonce: nonce,
+                    state: {},
                 });
                 done();
             })
@@ -699,6 +715,7 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
+                    state: {},
                 });
                 done();
             })
@@ -851,12 +868,13 @@ describe("Strategy", function () {
                 req.session["openidconnect:server.example.com"] = {
                     state: {
                         handle: "af0ifjsldkj",
+                        state: {},
                     },
                 };
             })
             .success(function (user, info) {
                 expect(user).to.deep.equal({ id: "248289761001" });
-                expect(info).to.deep.equal({});
+                expect(info).to.deep.equal({ state: {} });
                 done();
             })
             .error(done)
@@ -1927,12 +1945,10 @@ describe("Strategy", function () {
             }
         );
 
-        sinon
-            .stub(strategy._oauth2, "getOAuthAccessToken")
-            .yieldsAsync({
-                statusCode: 400,
-                data: '{"error":"invalid_grant","error_description":"The authorization code is invalid, expired, or revoked."}',
-            });
+        sinon.stub(strategy._oauth2, "getOAuthAccessToken").yieldsAsync({
+            statusCode: 400,
+            data: '{"error":"invalid_grant","error_description":"The authorization code is invalid, expired, or revoked."}',
+        });
 
         chai.passport
             .use(strategy)
