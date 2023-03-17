@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: 14
           registry-url: "https://registry.npmjs.org"
-      - run: npm publish --tag alpha
+      - run: npm publish --tag alpha --access public
         if: contains(env.NPM_TAG, 'alpha')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --tag beta
+      - run: npm publish --tag beta --access public
         if: contains(env.NPM_TAG, 'beta')
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
