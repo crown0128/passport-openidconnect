@@ -1,98 +1,146 @@
-# Passport-OpenID Connect
+# passport-openidconnect
 
 Fork of [Jared Hanson's](http://github.com/jaredhanson) [Passport](https://github.com/jaredhanson/passport) strategy for authenticating
 with [OpenID Connect](http://openid.net/connect/).
 
 This module lets you authenticate using OpenID Connect in your Node.js
-applications.  By plugging into Passport, OpenID Connect authentication can be
+applications.  By plugging into Passport, OpenID Connect-based sign in can be
 easily and unobtrusively integrated into any application or framework that
-supports [Connect](http://www.senchalabs.org/connect/)-style middleware,
-including [Express](http://expressjs.com/).
+supports [Connect](https://github.com/senchalabs/connect#readme)-style
+middleware, including [Express](https://expressjs.com/).
 
-## Installation
+<div align="center">
 
-```bash
-npm install @techpass/passport-openidconnect
+:heart: [Sponsors](https://www.passportjs.org/sponsors/?utm_source=github&utm_medium=referral&utm_campaign=passport-openidconnect&utm_content=nav-sponsors)
+
+</div>
+
+## Install
+
+```sh
+$ npm install passport-openidconnect
 ```
 
 ## Usage
 
-### Setup
+#### Configure Strategy
 
-```javascript
-const passport = require("passport");
-const OidcStrategy = require("@techpass/passport-openidconnect").Strategy;
+The OpenID Connect authentication strategy authenticates users using their
+account at an OpenID Provider (OP).  The strategy needs to be configured with
+the provider's endpoints, as well as a client ID and secret that has been issued
+by the provider to the app.  Consult the provider's documentation for the
+locations of these endpoints and instructions on how to register a client.
 
-passport.use(
-  "oidc",
-  new OidcStrategy(
-    {
-      issuer: "https://my-oidc-issuer.com",
-      authorizationURL: "https://my-oidc-issuer.com/oauth2/authorize",
-      tokenURL: "https://my-oidc-issuer.com/oauth2/token",
-      userInfoURL: "https://my-oidc-issuer.com/userinfo",
-      clientID: "my-oidc-client-id",
-      clientSecret: "my-oidc-client-secret",
-      callbackURL: "https://my-client-endpoint.com/auth/callback",
-      scope: "openid", // Optional values from OIDC spec: profile, email, address, phone
-      pkce: "S256" // Optional. Include to perform Proof Key Code Exchange else ignore. Possible values are "S256" || "plain"
-      originalReqProp: "query" // Optional. Extra state from any properties in the original auth request which will be sent back in the callback's request.query.state as a json string. Possible values are default properties in req such as path, params, query or any custom properties you assign into req
-    },
-    async (
+The strategy takes a `verify` function as an argument, which accepts `issuer`
+and `profile` as arguments.  `issuer` is set to an identifier for the OP.
+`profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/)
+stored in their account at the OP.  When authenticating a user, this strategy
+uses the OpenID Connect protocol to obtain this information via a sequence of
+redirects and back-channel HTTP requests to the OP.
+
+The `verify` function is responsible for determining the user to which the
+account at the OP belongs.  In cases where the account is logging in for the
+first time, a new user record is typically created automatically.  On subsequent
+logins, the existing user record will be found via its relation to the OP
+account.
+
+Because the `verify` function is supplied by the application, the app is free to
+use any database of its choosing.  The example below illustrates usage of a SQL
+database.
+
+```js
+var OpenIDConnectStrategy = require('passport-openidconnect');
+
+passport.use(new OpenIDConnectStrategy({
+    issuer: 'https://server.example.com',
+    authorizationURL: 'https://server.example.com/authorize',
+    tokenURL: 'https://server.example.com/token',
+    userInfoURL: 'https://server.example.com/userinfo',
+    clientID: process.env['CLIENT_ID'],
+    clientSecret: process.env['CLIENT_SECRET'],
+    callbackURL: 'https://client.example.org/cb'
+  },
+  function verify(issuer, profile, cb) {
+    db.get('SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?', [
       issuer,
-      sub,
-      profile,
-      jwtClaims,
-      accessToken,
-      refreshToken,
-      idToken,
-      params,
-      done
-    ) => {
-      User.findOrCreate(
-        { exampleId: profile.id },
-        function (err, user) {
-          return done(err, user);
-        }
-      );
-    }
-  )
-);
+      profile.id
+    ], function(err, cred) {
+      if (err) { return cb(err); }
+      
+      if (!cred) {
+        // The account at the OpenID Provider (OP) has not logged in to this app
+        // before.  Create a new user account and associate it with the account
+        // at the OP.
+        db.run('INSERT INTO users (name) VALUES (?)', [
+          profile.displayName
+        ], function(err) {
+          if (err) { return cb(err); }
+          
+          var id = this.lastID;
+          db.run('INSERT INTO federated_credentials (user_id, provider, subject) VALUES (?, ?, ?)', [
+            id,
+            issuer,
+            profile.id
+          ], function(err) {
+            if (err) { return cb(err); }
+            var user = {
+              id: id,
+              name: profile.displayName
+            };
+            return cb(null, user);
+          });
+        });
+      } else {
+        // The account at the OpenID Provider (OP) has previously logged in to
+        // the app.  Get the user account associated with the account at the OP
+        // and log the user in.
+        db.get('SELECT * FROM users WHERE id = ?', [ cred.user_id ], function(err, row) {
+          if (err) { return cb(err); }
+          if (!row) { return cb(null, false); }
+          return cb(null, row);
+        });
+      }
+    });
+  }
+));
 ```
 
-### Options
+#### Define Routes
 
-If authorizationURL and tokenURL are undefined, dynamic OIDC metadata discovery will be attempted using the `.well-known/openid-configuration` endpoint.
+Two routes are needed in order to allow users to log in with their account at an
+OP.  The first route redirects the user to the OP, where they will authenticate:
 
-### Express
+```js
+app.get('/login', passport.authenticate('openidconnect'));
+```
 
-```javascript
-app.get('/auth/login', passport.authenticate('oidc'));
+The second route processes the authentication response and logs the user in,
+when the OP redirects the user back to the app:
 
-app.get("/auth/callback", (req, res, next) => {
-  passport.authenticate("oidc", (err, user) => {
-    if (err || !user) { 
-      return res.redirect("/error-callback"); // Or other error handling
-    }
-    // Create the express session, calls serializeUser
-    req.logIn(user, function(err) {
-      if (err) {
-        return next(err);
-      }
-      res.redirect("/success-callback");
-    });
-  })(req, res, next);
-}
-  ```
+```js
+app.get('/cb',
+  passport.authenticate('openidconnect', { failureRedirect: '/login', failureMessage: true }),
+  function(req, res) {
+    res.redirect('/');
+  });
+```
 
-## Credits
+## Examples
 
-  - [Jared Hanson](http://github.com/jaredhanson)
+* [todos-express-openidconnect](https://github.com/passport/todos-express-openidconnect)
+
+  Illustrates how to use the OpenID Connect strategy within an Express
+  application.
+
+* [todos-express-auth0](https://github.com/passport/todos-express-auth0)
+
+  Illustrates how to use the OpenID Connect strategy to integrate with [Auth0](https://auth0.com/)
+  in an Express application.  For developers new to Passport and getting
+  started, a [tutorial](https://www.passportjs.org/tutorials/auth0/) is
+  available.
 
 ## License
 
-[The MIT License](http://opensource.org/licenses/MIT)
+[The MIT License](https://opensource.org/licenses/MIT)
 
-Copyright (c) 2011-2013 Jared Hanson <[http://jaredhanson.net/](http://jaredhanson.net/)>
-
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/vK9dyjRnnWsMzzJTQ57fRJpH/jaredhanson/passport-openidconnect'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/vK9dyjRnnWsMzzJTQ57fRJpH/jaredhanson/passport-openidconnect.svg' /></a>
+Copyright (c) 2011-2022 Jared Hanson <[https://www.jaredhanson.me/](https://www.jaredhanson.me/)>

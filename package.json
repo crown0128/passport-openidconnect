@@ -22,16 +22,13 @@
     "test": "mocha --reporter spec --require test/bootstrap/node test/*.test.js test/**/*.test.js"
   },
   "dependencies": {
-    "base64url": "^3.0.1",
-    "oauth": "^0.9.15",
-    "passport-strategy": "^1.0.0",
-    "request": "^2.88.0",
-    "webfinger": "^0.4.2"
+    "oauth": "0.9.x",
+    "passport-strategy": "1.x.x"
   },
   "devDependencies": {
     "chai": "2.x.x",
-    "chai-passport-strategy": "1.x.x",
-    "jsonwebtoken": "^7.1.9",
+    "chai-passport-strategy": "3.x.x",
+    "jws": "^4.0.0",
     "make-node": "0.3.x",
     "mocha": "2.x.x",
     "proxyquire": "^1.7.10",
