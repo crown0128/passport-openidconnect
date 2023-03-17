@@ -7,3 +7,6 @@ test/
 .github/
 .jshintrc
 .travis.yml
+.editorconfig
+.eslintrc.js
+.prettierrc
