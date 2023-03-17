@@ -23,5 +23,5 @@
 
 ### Added
 
-- feat: replace profile.id with oid property from id token claim
+- feat: replace `profile.id` with `oid` property from id token claim
 - feat: provide pkce support

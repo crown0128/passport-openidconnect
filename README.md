@@ -1,6 +1,6 @@
 # Passport OIDC Connect
 
-> Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
+> **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
 
 This module lets you authenticate using OpenID Connect in your Node.js applications. By plugging into Passport, OpenID Connect-based sign in can be easily and unobtrusively integrated into any application or framework that supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware, including [Express](https://expressjs.com/).
 
@@ -29,7 +29,7 @@ The `verify` function is responsible for determining the user to which the accou
 Because the `verify` function is supplied by the application, the app is free to use any database of its choosing. The example below illustrates usage of a SQL database.
 
 ```js
-var OpenIDConnectStrategy = require("passport-openidconnect");
+var OpenIDConnectStrategy = require("@techpass/passport-openidconnect");
 
 passport.use(
   new OpenIDConnectStrategy(
