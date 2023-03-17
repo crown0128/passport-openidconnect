@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.0.0-beta1 (2023-03-17)
 
 **Note**: Synced to [v0.1.1](https://github.com/jaredhanson/passport-openidconnect/releases/tag/v0.1.1) upstream release.
 
