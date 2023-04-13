@@ -63,7 +63,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -102,7 +101,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -144,7 +142,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -184,7 +181,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -224,7 +220,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -264,7 +259,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -304,7 +298,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -344,7 +337,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -384,7 +376,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -424,7 +415,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -464,7 +454,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -504,7 +493,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -546,7 +534,6 @@ describe("Strategy", function () {
                     handle: state,
                     maxAge: 86400,
                     issued: new Date("2011-07-21T20:42:50.000Z"),
-                    state: {},
                 });
                 done();
             })
@@ -586,7 +573,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -626,7 +612,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -670,7 +655,6 @@ describe("Strategy", function () {
                 ).to.deep.equal({
                     handle: state,
                     nonce: nonce,
-                    state: {},
                 });
                 done();
             })
@@ -715,7 +699,6 @@ describe("Strategy", function () {
                     this.session["openidconnect:server.example.com"].state
                 ).to.deep.equal({
                     handle: state,
-                    state: {},
                 });
                 done();
             })
@@ -868,13 +851,12 @@ describe("Strategy", function () {
                 req.session["openidconnect:server.example.com"] = {
                     state: {
                         handle: "af0ifjsldkj",
-                        state: {},
                     },
                 };
             })
             .success(function (user, info) {
                 expect(user).to.deep.equal({ id: "248289761001" });
-                expect(info).to.deep.equal({ state: {} });
+                expect(info).to.deep.equal({});
                 done();
             })
             .error(done)

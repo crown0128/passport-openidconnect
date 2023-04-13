@@ -36,7 +36,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();
@@ -79,7 +78,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();
@@ -120,7 +118,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();
@@ -161,7 +158,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();
@@ -202,7 +198,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();
@@ -243,7 +238,6 @@ describe("Strategy", function () {
                     ).to.deep.equal({
                         state: {
                             handle: state,
-                            state: {},
                         },
                     });
                     done();

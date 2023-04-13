@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- feat: typescript typings
+
+### Change
+
+- fix: appState should remain undefined if pkce is false
+
 ## v1.0.0-beta1 (2023-03-17)
 
 **Note**: Synced to [v0.1.1](https://github.com/jaredhanson/passport-openidconnect/releases/tag/v0.1.1) upstream release.
