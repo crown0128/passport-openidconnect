@@ -123,7 +123,7 @@ declare namespace OpenIDConnectStrategy {
         store(
             req: express.Request,
             ctx: SessionStoreContext,
-            appState?: object,
+            appState?: object | undefined,
             meta?: any,
             cb: SessionStoreCallback
         ): void;
@@ -182,6 +182,8 @@ declare namespace OpenIDConnectStrategy {
         user?: express.User,
         info?: any
     ) => void;
+
+    type VerifyFunction = typeof VerifyFunction;
 
     function VerifyFunction(
         issuer: string,
