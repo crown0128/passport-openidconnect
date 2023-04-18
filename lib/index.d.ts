@@ -20,8 +20,6 @@ declare class OpenIDConnectStrategy extends passportStrategy.Strategy {
      *
      * Subclasses are allowed to use it when making protected resource requests to retrieve
      * the user profile.
-     *
-     * @protected
      */
     protected _oauth2: OAuth2;
 
@@ -62,6 +60,9 @@ declare class OpenIDConnectStrategy extends passportStrategy.Strategy {
 }
 
 declare namespace OpenIDConnectStrategy {
+    type Strategy = OpenIDConnectStrategy;
+    const Strategy: typeof OpenIDConnectStrategy;
+
     interface SessionStoreContext {
         issued?: string | undefined;
         maxAge?: number | undefined;
@@ -137,8 +138,6 @@ declare namespace OpenIDConnectStrategy {
          * @param req - Request object of the incoming http request
          * @param reqState - Generated uuid string that identifies a unique auth session across multiple requests to OIDC provider
          * @param cb - {@link SessionVerifyCallback} to execute after storing session
-         *
-         * @public
          */
         verify(
             req: express.Request,
@@ -147,6 +146,12 @@ declare namespace OpenIDConnectStrategy {
         ): void;
     }
 
+    /**
+     * Options available to pass into {@link OpenIDConnectStrategy} during instantiation.
+     * Majority of these parameters adhere to the OAuth2 Auth Code Flow spec.
+     *
+     * @see https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth
+     */
     interface StrategyOptions {
         issuer: string;
         authorizationURL: string;
@@ -156,25 +161,44 @@ declare namespace OpenIDConnectStrategy {
         clientID: string;
         clientSecret: string;
 
-        acrValues?: any;
+        acrValues?: string | undefined;
         agent?: boolean | Agent | undefined;
-        claims?: any;
+        claims?: object | undefined;
         customHeaders?: OutgoingHttpHeaders | undefined;
-        display?: any;
-        idTokenHint?: any;
-        loginHunt?: any;
-        maxAge?: any;
-        nonce?: any;
-        passReqToCallback?: boolean | undefined;
-        pkce?: boolean | undefined;
-        prompt?: any;
-        proxy?: any;
-        responseMode?: any;
+        display?: string | undefined;
+        idTokenHint?: string | undefined;
+        loginHint?: string | undefined;
+        maxAge?: string | undefined;
+        nonce?: string | undefined;
+        prompt?: string | undefined;
+        proxy?: boolean | undefined;
+        responseMode?: string | undefined;
         scope?: string | string[] | undefined;
+        uiLocales?: string | undefined;
+
+        /**
+         * If defined, the {@link express.Request | Request} object will be passed into {@link VerifyFunction}
+         */
+        passReqToCallback?: boolean | undefined;
+        /**
+         * Defines which PKCE protocol to use. If undefined, PKCE is not used.
+         *
+         * @see https://oauth.net/2/pkce/
+         */
+        pkce?: "S256" | "plain" | undefined;
+        /**
+         * Unique session identifier for this particular provider.
+         * If none is given, the provider's hostname will be used.
+         */
         sessionKey?: string | undefined;
-        store?: any;
+        /**
+         * Session store instance with interface compliant to {@link SessionStore}
+         */
+        store?: SessionStore | undefined;
+        /**
+         * If defined, skips the loading of the user profile
+         */
         skipUserProfile?: boolean | undefined;
-        uiLocales?: any;
     }
 
     type VerifyCallback = (
@@ -183,134 +207,126 @@ declare namespace OpenIDConnectStrategy {
         info?: any
     ) => void;
 
-    type VerifyFunction = typeof VerifyFunction;
+    type JwtToken = string | { [key: string]: unknown };
 
-    function VerifyFunction(
-        issuer: string,
-        profile: Profile,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        params?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        issuer: string,
-        uiProfile?: object,
-        idProfile?: object,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        params?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        profile: Profile,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        profile: Profile,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        params?: any,
-        done: VerifyCallback
-    ): void;
-
-    function VerifyFunction(
-        req: express.Request,
-        issuer: string,
-        uiProfile?: object,
-        idProfile?: object,
-        context?: object,
-        idToken?: any,
-        accessToken?: any,
-        refreshToken?: any,
-        params?: any,
-        done: VerifyCallback
-    ): void;
+    type VerifyFunction =
+        | ((issuer: string, profile: Profile, done: VerifyCallback) => void)
+        | ((
+              issuer: string,
+              profile: Profile,
+              context: object,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              params: any,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              issuer: string,
+              uiProfile: object,
+              idProfile: object,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              params: any,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: object,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              params: any,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              uiProfile: object,
+              idProfile: object,
+              context: object,
+              idToken: string | object,
+              accessToken: string | object,
+              refreshToken: string,
+              params: any,
+              done: VerifyCallback
+          ) => void);
 
     /**
      * Authenticated user's profile
      */
     interface Profile extends passportStrategy.Profile {
+        /**
+         * Profile's object id within idp store.
+         */
         oid?: string;
     }
 
+    /**
+     * Options available to pass {@link OpenIDConnectStrategy.authenticate | Strategy.autheticate()}
+     */
     interface AuthenticateOptions {
         callbackURL?: string | undefined;
-        display?: any;
-        loginHint?: any;
-        prompt?: any;
+        display?: string | undefined;
+        loginHint?: string | undefined;
+        prompt?: string | undefined;
         scope?: string | string[] | undefined;
         state?: object | undefined;
     }
@@ -330,6 +346,8 @@ declare namespace OpenIDConnectStrategy {
 
         /**
          * Constructs an AuthorizationError instance
+         *
+         * @param message - error message
          * @param code - error code
          * @param uri - error uri
          * @param status - error status code
@@ -353,6 +371,7 @@ declare namespace OpenIDConnectStrategy {
         /**
          * Constructs a TokenError instance
          *
+         * @param message - error message
          * @param code - error code
          * @param uri - error uri
          * @param status - error status code
@@ -374,8 +393,16 @@ declare namespace OpenIDConnectStrategy {
     class InternalOAuthError extends Error {
         oauthError?: { statusCode?: number; data?: any };
 
+        /**
+         * Construccts an InternalOAuthError instance
+         *
+         * @param message - error message
+         * @param err - error object
+         */
         constructor(message: string, err: Error);
 
         toString(): string;
     }
 }
+
+export = OpenIDConnectStrategy;
