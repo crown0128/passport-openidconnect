@@ -59,6 +59,8 @@ declare class OpenIDConnectStrategy extends passportStrategy.Strategy {
     authorizationParams(options?: any): object;
 }
 
+type JwtToken = string | { [key: string]: unknown };
+
 declare namespace OpenIDConnectStrategy {
     type Strategy = OpenIDConnectStrategy;
     const Strategy: typeof OpenIDConnectStrategy;
@@ -118,13 +120,13 @@ declare namespace OpenIDConnectStrategy {
          * @param req - Request object of the incoming http request
          * @param ctx - {@link SessionStoreContext} info
          * @param appState - additional app state to be stored in session
-         * @param meta - metadata of the request
+         * @param meta - metadata of the request. not used.
          * @param cb - {@link SessionStoreCallback} to execute after storing session
          */
         store(
             req: express.Request,
             ctx: SessionStoreContext,
-            appState?: object | undefined,
+            appState?: any,
             meta?: any,
             cb: SessionStoreCallback
         ): void;
@@ -187,111 +189,73 @@ declare namespace OpenIDConnectStrategy {
          */
         pkce?: "S256" | "plain" | undefined;
         /**
-         * Unique session identifier for this particular provider.
-         * If none is given, the provider's hostname will be used.
+         * Unique session identifier for this issuer.
+         * If none is given, the issuer's hostname will be used.
          */
         sessionKey?: string | undefined;
         /**
-         * Session store instance with interface compliant to {@link SessionStore}
+         * Custom session store instance with interface compliant to {@link SessionStore}
          */
         store?: SessionStore | undefined;
         /**
-         * If defined, skips the loading of the user profile
+         * determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
+         * is decided by arity of {@link VerifyFunction}.
          */
-        skipUserProfile?: boolean | undefined;
+        skipUserProfile?: boolean | function | undefined;
     }
 
-    type VerifyCallback = (
-        err?: Error | null,
-        user?: express.User,
-        info?: any
-    ) => void;
+    type Context = {
+        timestamp?: Date;
+        class?: string;
+        methods?: string;
+    };
 
-    type JwtToken = string | { [key: string]: unknown };
+    type VerifyCallback = (
+        err?: Error | string | null,
+        user?: express.User | false
+    ) => void;
 
     type VerifyFunction =
         | ((issuer: string, profile: Profile, done: VerifyCallback) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: object,
+              context: Context,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: object,
-              idToken: string | object,
+              context: Context,
+              idToken: JwtToken,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
               refreshToken: string,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
-              refreshToken: string,
-              params: any,
-              done: VerifyCallback
-          ) => void)
-        | ((
-              issuer: string,
-              uiProfile: object,
-              idProfile: object,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
               refreshToken: string,
               params: any,
               done: VerifyCallback
           ) => void)
         | ((
-              req: Request,
               issuer: string,
-              profile: Profile,
-              done: VerifyCallback
-          ) => void)
-        | ((
-              req: Request,
-              issuer: string,
-              profile: Profile,
-              context: object,
-              done: VerifyCallback
-          ) => void)
-        | ((
-              req: Request,
-              issuer: string,
-              profile: Profile,
-              context: object,
-              idToken: string | object,
-              done: VerifyCallback
-          ) => void)
-        | ((
-              req: Request,
-              issuer: string,
-              profile: Profile,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
-              refreshToken: string,
-              done: VerifyCallback
-          ) => void)
-        | ((
-              req: Request,
-              issuer: string,
-              profile: Profile,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
+              uiProfile: any,
+              idProfile: any,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
               refreshToken: string,
               params: any,
               done: VerifyCallback
@@ -299,11 +263,53 @@ declare namespace OpenIDConnectStrategy {
         | ((
               req: Request,
               issuer: string,
-              uiProfile: object,
-              idProfile: object,
-              context: object,
-              idToken: string | object,
-              accessToken: string | object,
+              profile: Profile,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: Context,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: Context,
+              idToken: JwtToken,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
+              refreshToken: string,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              profile: Profile,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
+              refreshToken: string,
+              params: any,
+              done: VerifyCallback
+          ) => void)
+        | ((
+              req: Request,
+              issuer: string,
+              uiProfile: any,
+              idProfile: any,
+              context: Context,
+              idToken: JwtToken,
+              accessToken: JwtToken,
               refreshToken: string,
               params: any,
               done: VerifyCallback
@@ -328,7 +334,7 @@ declare namespace OpenIDConnectStrategy {
         loginHint?: string | undefined;
         prompt?: string | undefined;
         scope?: string | string[] | undefined;
-        state?: object | undefined;
+        state?: any;
     }
 
     /**
