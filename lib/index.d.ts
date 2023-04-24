@@ -65,10 +65,12 @@ declare namespace OpenIDConnectStrategy {
     type Strategy = OpenIDConnectStrategy;
     const Strategy: typeof OpenIDConnectStrategy;
 
-    interface SessionStoreContext {
+    /** Session Context */
+    interface SessionContext {
         issued?: string | undefined;
         maxAge?: number | undefined;
         nonce?: string | undefined;
+        verifier?: string | undefined;
     }
 
     /**
@@ -118,16 +120,14 @@ declare namespace OpenIDConnectStrategy {
          * redirected back to the application.
          *
          * @param req - Request object of the incoming http request
-         * @param ctx - {@link SessionStoreContext} info
+         * @param ctx - {@link SessionContext} info
          * @param appState - additional app state to be stored in session
-         * @param meta - metadata of the request. not used.
          * @param cb - {@link SessionStoreCallback} to execute after storing session
          */
         store(
             req: express.Request,
-            ctx: SessionStoreContext,
+            ctx: SessionContext,
             appState?: any,
-            meta?: any,
             cb: SessionStoreCallback
         ): void;
 
@@ -150,7 +150,6 @@ declare namespace OpenIDConnectStrategy {
 
     /**
      * Options available to pass into {@link OpenIDConnectStrategy} during instantiation.
-     * Majority of these parameters adhere to the OAuth2 Auth Code Flow spec.
      *
      * @see https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth
      */
@@ -171,7 +170,8 @@ declare namespace OpenIDConnectStrategy {
         idTokenHint?: string | undefined;
         loginHint?: string | undefined;
         maxAge?: string | undefined;
-        nonce?: string | undefined;
+        /** If defined, an internally generated nonce string will be generated and added to the request */
+        nonce?: boolean | undefined;
         prompt?: string | undefined;
         proxy?: boolean | undefined;
         responseMode?: string | undefined;
@@ -201,20 +201,36 @@ declare namespace OpenIDConnectStrategy {
          * determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
          * is decided by arity of {@link VerifyFunction}.
          */
-        skipUserProfile?: boolean | function | undefined;
+        skipUserProfile?:
+            | boolean
+            | ((
+                  req: express.Request,
+                  claims: any,
+                  done: (err: Error | null, skip: boolean) => void
+              ) => void)
+            | ((req: express.Request, claims: any) => boolean)
+            | undefined;
     }
 
-    type Context = {
+    type AuthContext = {
         timestamp?: Date;
         class?: string;
         methods?: string;
     };
 
+    /**
+     * Callback for {@link VerifyFunction} to invoke to either return a valid user object, false or error.
+     * @see https://www.passportjs.org/concepts/authentication/strategies/
+     */
     type VerifyCallback = (
         err?: Error | string | null,
-        user?: express.User | false
+        user?: object | false,
+        info?: any
     ) => void;
 
+    /**
+     * Function to process authenticated info and return a valid user profile via {@link VerifyCallback}
+     */
     type VerifyFunction =
         | ((issuer: string, profile: Profile, done: VerifyCallback) => void)
         | ((
