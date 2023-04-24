@@ -67,7 +67,7 @@ declare namespace OpenIDConnectStrategy {
 
     /** Session Context */
     interface SessionContext {
-        issued?: string | undefined;
+        issued?: string | Date | undefined;
         maxAge?: number | undefined;
         nonce?: string | undefined;
         verifier?: string | undefined;
@@ -91,7 +91,7 @@ declare namespace OpenIDConnectStrategy {
      */
     type SessionVerifyCallback = (
         err: Error | null,
-        ctx?: false | SessionStoreContext,
+        ctx?: false | SessionContext,
         state?: any
     ) => void;
 
@@ -127,7 +127,7 @@ declare namespace OpenIDConnectStrategy {
         store(
             req: express.Request,
             ctx: SessionContext,
-            appState?: any,
+            appState: any,
             cb: SessionStoreCallback
         ): void;
 
@@ -236,20 +236,20 @@ declare namespace OpenIDConnectStrategy {
         | ((
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
@@ -258,7 +258,7 @@ declare namespace OpenIDConnectStrategy {
         | ((
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
@@ -269,7 +269,7 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               uiProfile: any,
               idProfile: any,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
@@ -286,14 +286,14 @@ declare namespace OpenIDConnectStrategy {
               req: Request,
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               done: VerifyCallback
           ) => void)
         | ((
               req: Request,
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               done: VerifyCallback
           ) => void)
@@ -301,7 +301,7 @@ declare namespace OpenIDConnectStrategy {
               req: Request,
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
@@ -311,7 +311,7 @@ declare namespace OpenIDConnectStrategy {
               req: Request,
               issuer: string,
               profile: Profile,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
@@ -323,7 +323,7 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               uiProfile: any,
               idProfile: any,
-              context: Context,
+              context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
               refreshToken: string,
