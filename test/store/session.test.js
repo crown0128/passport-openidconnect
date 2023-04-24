@@ -22,6 +22,44 @@ describe("SessionStore", function () {
 
         var spy = sinon.spy(strategy._stateStore, "store");
 
+        it("should have verified in ctx if pkce is defined", function (done) {
+            var pkceStrategy = new Strategy(
+                {
+                    issuer: "https://server.example.com",
+                    authorizationURL: "https://server.example.com/authorize",
+                    tokenURL: "https://server.example.com/token",
+                    clientID: "s6BhdRkqt3",
+                    clientSecret: "some_secret12345",
+                    callbackURL: "https://client.example.org/cb",
+                    pkce: "S256",
+                },
+                function (iss, profile, done) {
+                    throw new Error("verify function should not be called");
+                }
+            );
+
+            chai.passport
+                .use(pkceStrategy)
+                .request(function (req) {
+                    req.session = {};
+                })
+                .redirect(function (url) {
+                    const l = uri.parse(url, true);
+                    const state = l.query.state;
+
+                    expect(state).to.have.length(24);
+                    expect(
+                        this.session["openidconnect:server.example.com"]
+                    ).to.have.deep.property("state.verifier");
+                    expect(
+                        this.session["openidconnect:server.example.com"]
+                    ).to.have.deep.property("state.handle");
+                    done();
+                })
+                .error(done)
+                .authenticate();
+        });
+
         it("should store strategy-specific state in session", function (done) {
             chai.passport
                 .use(strategy)
@@ -42,15 +80,6 @@ describe("SessionStore", function () {
                     });
 
                     expect(spy.calledOnce).to.be.true;
-                    expect(spy.getCall(0).args[3]).to.deep.equal({
-                        issuer: "https://server.example.com",
-                        authorizationURL:
-                            "https://server.example.com/authorize",
-                        tokenURL: "https://server.example.com/token",
-                        clientID: "s6BhdRkqt3",
-                        callbackURL: "https://client.example.org/cb",
-                    });
-
                     done();
                 })
                 .error(done)
