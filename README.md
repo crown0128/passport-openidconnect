@@ -2,7 +2,7 @@
 
 > **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
 
-![npm (scoped)](https://img.shields.io/npm/v/@techpass/passport-openidconnect?color=blue)
+[![npm (scoped)](https://img.shields.io/npm/v/@techpass/passport-openidconnect?color=blue)](https://www.npmjs.com/package/@techpass/passport-openidconnect)
 
 This module lets you authenticate using OpenID Connect in your Node.js applications. By plugging into Passport, OpenID Connect-based sign in can be easily and unobtrusively integrated into any application or framework that supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware, including [Express](https://expressjs.com/).
 
