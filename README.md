@@ -96,7 +96,7 @@ interface StrategyOptions {
 }
 ```
 
-The strategy constructor also takes a `verify` function as an argument, with the following [overloads](./lib/index.d.ts#244).
+The strategy constructor also takes a `verify` function as an argument, with the following [overloads](./lib/index.d.ts#L244).
 
 The `issuer` parameter is set to an identifier for the OP and `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP.
 
