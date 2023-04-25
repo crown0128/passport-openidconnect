@@ -1,14 +1,14 @@
 # Passport OIDC Connect
 
 > **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
+>
+> <div align="center">
+>
+> :heart: [Sponsors](https://www.passportjs.org/sponsors/?utm_source=github&utm_medium=referral&> utm_campaign=passport-openidconnect&utm_content=nav-sponsors)
+>
+> </div>
 
 This module lets you authenticate using OpenID Connect in your Node.js applications. By plugging into Passport, OpenID Connect-based sign in can be easily and unobtrusively integrated into any application or framework that supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware, including [Express](https://expressjs.com/).
-
-<div align="center">
-
-:heart: [Sponsors](https://www.passportjs.org/sponsors/?utm_source=github&utm_medium=referral&utm_campaign=passport-openidconnect&utm_content=nav-sponsors)
-
-</div>
 
 ## Install
 
@@ -16,20 +16,104 @@ This module lets you authenticate using OpenID Connect in your Node.js applicati
 npm install @techpass/passport-openidconnect
 ```
 
+> If you are coding in typescript, this library has native typings support. But you will need to separately install type definitions for `express` and `passport-strategy` as there is a dependency on them.
+>
+> To install these typings from the [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) project run: `npm i -D @types/express @types/passport-strategy`.
+
 ## Usage
 
 #### Configure Strategy
 
-The OpenID Connect authentication strategy authenticates users using their account at an OpenID Provider (OP). The strategy needs to be configured with the provider's endpoints, as well as a client ID and secret that has been issued by the provider to the app. Consult the provider's documentation for the locations of these endpoints and instructions on how to register a client.
+The OpenID Connect authentication strategy authenticates users using their account at an OpenID Provider (OP). The strategy needs to be configured with the provider's endpoints, in order to function properly. Consult the provider's documentation for the locations of these endpoints and instructions on how to register a client.
 
-The strategy takes a `verify` function as an argument, which accepts `issuer` and `profile` as arguments. `issuer` is set to an identifier for the OP. `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP. When authenticating a user, this strategy uses the OpenID Connect protocol to obtain this information via a sequence of redirects and back-channel HTTP requests to the OP.
+The `Strategy` constructor takes in the following options:
 
-The `verify` function is responsible for determining the user to which the account at the OP belongs. In cases where the account is logging in for the first time, a new user record is typically created automatically. On subsequent logins, the existing user record will be found via its relation to the OP account.
+```js
+/**
+ * Options available to pass into Strategy constructor during instantiation.
+ *
+ * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
+ */
+interface StrategyOptions {
+  issuer: string;
+  authorizationURL: string;
+  tokenURL: string;
+  callbackURL: string;
+  userInfoURL: string;
+  clientID: string;
+  clientSecret: string;
+  acrValues?: string;
+  claims?: object;
+  customHeaders?: OutgoingHttpHeaders;
+  display?: string;
+  idTokenHint?: string;
+  loginHint?: string;
+  maxAge?: string;
+  prompt?: string;
+  proxy?: boolean;
+  responseMode?: string;
+  scope?: string | string[];
+  uiLocales?: string;
+
+  /**
+   * If defined, an internally generated nonce will be added to the client request to mitigate replay attacks.
+   *
+   * @see https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes
+   */
+  nonce?: boolean;
+  /**
+   * Http client agent. If undefined, the default node agent is used.
+   *
+   * @see https://nodejs.org/api/http.html#class-httpagent
+   */
+  agent?: Agent;
+  /**
+   * If defined, the {@link express.Request | Request} object will be passed into {@link VerifyFunction}
+   */
+  passReqToCallback?: boolean;
+  /**
+   * Defines a PKCE protocol to use. If undefined, PKCE is not used.
+   *
+   * @see https://oauth.net/2/pkce/
+   */
+  pkce?: "S256" | "plain";
+  /**
+   * Unique session identifier for this issuer.
+   * If none is given, the issuer's hostname will be used.
+   */
+  sessionKey?: string;
+  /**
+   * Custom session store instance with interface compliant to {@link SessionStore}.
+   * If undefined, the internal store will be used.
+   */
+  store?: SessionStore;
+  /**
+   * Determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
+   * is decided by arity of {@link VerifyFunction}.
+   */
+  skipUserProfile?:
+    | boolean
+    | ((
+        req: express.Request,
+        claims: any,
+        done: (err: Error | null, skip: boolean) => void
+      ) => void)
+    | ((req: express.Request, claims: any) => boolean);
+}
+```
+
+The strategy constructor also takes a `verify` function as an argument, with the following [overloads](./lib/index.d.ts#244).
+
+The `issuer` parameter is set to an identifier for the OP and `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP.
+
+The function is responsible for processing the authenticated user info that the OP returns, and invoking the `done` callback.
+
+Typically, when the account is logging in for the first time, a new user record is created in the application. On subsequent logins, the existing user record will be found via its relation to the OP account.
 
 Because the `verify` function is supplied by the application, the app is free to use any database of its choosing. The example below illustrates usage of a SQL database.
 
 ```js
-var OpenIDConnectStrategy = require("@techpass/passport-openidconnect");
+const OpenIDConnectStrategy = require("@techpass/passport-openidconnect");
 
 passport.use(
   new OpenIDConnectStrategy(
@@ -41,15 +125,14 @@ passport.use(
       clientID: process.env["CLIENT_ID"],
       clientSecret: process.env["CLIENT_SECRET"],
       callbackURL: "https://client.example.org/cb",
-      pkce: "S256",
     },
-    function verify(issuer, profile, cb) {
+    function verify(issuer, profile, done) {
       db.get(
         "SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?",
         [issuer, profile.id],
         function (err, cred) {
           if (err) {
-            return cb(err);
+            return done(err);
           }
 
           if (!cred) {
@@ -61,7 +144,7 @@ passport.use(
               [profile.displayName],
               function (err) {
                 if (err) {
-                  return cb(err);
+                  return done(err);
                 }
 
                 var id = this.lastID;
@@ -70,13 +153,13 @@ passport.use(
                   [id, issuer, profile.id],
                   function (err) {
                     if (err) {
-                      return cb(err);
+                      return done(err);
                     }
                     var user = {
                       id: id,
                       name: profile.displayName,
                     };
-                    return cb(null, user);
+                    return done(null, user);
                   }
                 );
               }
@@ -90,12 +173,12 @@ passport.use(
               [cred.user_id],
               function (err, row) {
                 if (err) {
-                  return cb(err);
+                  return done(err);
                 }
                 if (!row) {
-                  return cb(null, false);
+                  return done(null, false);
                 }
-                return cb(null, row);
+                return done(null, row);
               }
             );
           }

@@ -151,7 +151,7 @@ declare namespace OpenIDConnectStrategy {
     /**
      * Options available to pass into {@link OpenIDConnectStrategy} during instantiation.
      *
-     * @see https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth
+     * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
      */
     interface StrategyOptions {
         issuer: string;
@@ -163,15 +163,12 @@ declare namespace OpenIDConnectStrategy {
         clientSecret: string;
 
         acrValues?: string | undefined;
-        agent?: boolean | Agent | undefined;
         claims?: object | undefined;
         customHeaders?: OutgoingHttpHeaders | undefined;
         display?: string | undefined;
         idTokenHint?: string | undefined;
         loginHint?: string | undefined;
         maxAge?: string | undefined;
-        /** If defined, an internally generated nonce string will be generated and added to the request */
-        nonce?: boolean | undefined;
         prompt?: string | undefined;
         proxy?: boolean | undefined;
         responseMode?: string | undefined;
@@ -179,11 +176,23 @@ declare namespace OpenIDConnectStrategy {
         uiLocales?: string | undefined;
 
         /**
+         * If defined, an internally generated nonce will be added to the client request to mitigate replay attacks.
+         *
+         * @see https://openid.net/specs/openid-connect-core-1_0.html#NonceNotes
+         */
+        nonce?: boolean | undefined;
+        /**
+         * Http client agent. If undefined, the default node agent is used.
+         *
+         * See https://nodejs.org/api/http.html#class-httpagent
+         */
+        agent?: Agent | undefined;
+        /**
          * If defined, the {@link express.Request | Request} object will be passed into {@link VerifyFunction}
          */
         passReqToCallback?: boolean | undefined;
         /**
-         * Defines which PKCE protocol to use. If undefined, PKCE is not used.
+         * Defines a PKCE protocol to use. If undefined, PKCE is not used.
          *
          * @see https://oauth.net/2/pkce/
          */
@@ -194,11 +203,12 @@ declare namespace OpenIDConnectStrategy {
          */
         sessionKey?: string | undefined;
         /**
-         * Custom session store instance with interface compliant to {@link SessionStore}
+         * Custom session store instance with interface compliant to {@link SessionStore}.
+         * If undefined, the internal store will be used.
          */
         store?: SessionStore | undefined;
         /**
-         * determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
+         * Determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
          * is decided by arity of {@link VerifyFunction}.
          */
         skipUserProfile?:
