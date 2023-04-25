@@ -1,12 +1,6 @@
 # Passport OIDC Connect
 
 > **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
->
-> <div align="center">
->
-> :heart: [Sponsors](https://www.passportjs.org/sponsors/?utm_source=github&utm_medium=referral&> utm_campaign=passport-openidconnect&utm_content=nav-sponsors)
->
-> </div>
 
 This module lets you authenticate using OpenID Connect in your Node.js applications. By plugging into Passport, OpenID Connect-based sign in can be easily and unobtrusively integrated into any application or framework that supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware, including [Express](https://expressjs.com/).
 
