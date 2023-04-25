@@ -1,19 +1,20 @@
 # Changelog
 
-## Unreleased
+## v1.0.0-beta3 (2023-04-25)
 
 ### Changed
 
 - refactor: use `SessionContext` to hold pkce verifier instead of `appState`
 - fix: removed unused `meta` argument from `Session.store()`
 - fix: improved type definitions for typescript
+- fix: "openid" added to scope even if already present. Take in fix from uptream [PR#99](https://github.com/jaredhanson/passport-openidconnect/pull/99).
 
 ### Added
 
 - docs: more jsdocs updates
 - docs: add constructor parameter description to README
 
-## v1.0.0-beta2 (2023-05-18)
+## v1.0.0-beta2 (2023-04-18)
 
 **Note**: Synced to [v0.1.1](https://github.com/jaredhanson/passport-openidconnect/releases/tag/v0.1.1) upstream release.
 
