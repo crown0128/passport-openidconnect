@@ -277,7 +277,7 @@ declare namespace OpenIDConnectStrategy {
           ) => void)
         | ((
               issuer: string,
-              userInfoProfile: MergedProfile,
+              uiProfile: MergedProfile,
               idProfile: Profile,
               context: AuthContext,
               idToken: JwtToken,
@@ -331,7 +331,7 @@ declare namespace OpenIDConnectStrategy {
         | ((
               req: Request,
               issuer: string,
-              userInfoProfile: MergedProfile,
+              uiProfile: MergedProfile,
               idProfile: Profile,
               context: AuthContext,
               idToken: JwtToken,

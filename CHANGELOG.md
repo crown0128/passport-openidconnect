@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+### v1.0.0-beta4 (2023-04-26)
+
+- fix: define Profile interface locally
+- docs: clean up jsdoc for verify function
+
 ## v1.0.0-beta3 (2023-04-25)
 
 ### Changed

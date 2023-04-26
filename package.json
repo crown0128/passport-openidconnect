@@ -1,6 +1,6 @@
 {
     "name": "@techpass/passport-openidconnect",
-    "version": "1.0.0-beta3",
+    "version": "1.0.0-beta4",
     "description": "OpenID Connect authentication strategy for Passport.",
     "keywords": [
         "auth",
@@ -22,6 +22,9 @@
     },
     "license": "MIT",
     "author": "Jared Hanson <jaredhanson@gmail.com> (http://www.jaredhanson.net/)",
+    "contributors": [
+        "GovTechSG"
+    ],
     "main": "./lib",
     "types": "./lib/index.d.ts",
     "scripts": {
