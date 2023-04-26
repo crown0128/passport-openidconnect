@@ -231,10 +231,14 @@ declare namespace OpenIDConnectStrategy {
     /**
      * Callback for {@link VerifyFunction} to invoke to either return a valid user object, false or error.
      * @see https://www.passportjs.org/concepts/authentication/strategies/
+     *
+     * @param err - Either an {@link Error} object or string message. Null when no error.
+     * @param user - User object returned by application's verify function.
+     * @param info - Optional argument with additional user information.
      */
     type VerifyCallback = (
         err: Error | string | null,
-        user?: object | false,
+        user?: any,
         info?: any
     ) => void;
 
