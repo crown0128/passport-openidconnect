@@ -85,7 +85,7 @@ interface StrategyOptions {
   store?: SessionStore;
   /**
    * Determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
-   * is decided by arity of {@link VerifyFunction}.
+   * is decided by arity of {@link VerifyFunction} and value of `passReqToCallback`
    */
   skipUserProfile?:
     | boolean
@@ -101,6 +101,13 @@ interface StrategyOptions {
 The strategy constructor also takes a `verify` function as an argument, with the following [overloads](./lib/index.d.ts#L244).
 
 The `issuer` parameter is set to an identifier for the OP and `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP.
+
+> Depending on `skipUserProfile` and arity of `verify` function, the returning `profile` may contain:
+>
+> - data parse from id_token claim
+> - merge data from both id_token claim & userInfo endpoint
+>
+> Instead of a single `profile` instance, you can get the strategy to return profile from id_token and userInfo endpoint separately. They will return as `idProfile` and `userInfoProfile`.
 
 The function is responsible for processing the authenticated user info that the OP returns, and invoking the `done` callback.
 

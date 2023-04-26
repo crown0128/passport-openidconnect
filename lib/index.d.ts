@@ -209,7 +209,7 @@ declare namespace OpenIDConnectStrategy {
         store?: SessionStore | undefined;
         /**
          * Determines if user data is loaded from /userInfo endpoint. If not specified, loading of userInfo
-         * is decided by arity of {@link VerifyFunction}.
+         * is decided by arity of {@link VerifyFunction} and value of `passReqToCallback.`
          */
         skipUserProfile?:
             | boolean
@@ -233,7 +233,7 @@ declare namespace OpenIDConnectStrategy {
      * @see https://www.passportjs.org/concepts/authentication/strategies/
      */
     type VerifyCallback = (
-        err?: Error | string | null,
+        err: Error | string | null,
         user?: object | false,
         info?: any
     ) => void;
@@ -277,8 +277,8 @@ declare namespace OpenIDConnectStrategy {
           ) => void)
         | ((
               issuer: string,
-              uiProfile: any,
-              idProfile: any,
+              userInfoProfile: MergedProfile,
+              idProfile: Profile,
               context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
@@ -331,8 +331,8 @@ declare namespace OpenIDConnectStrategy {
         | ((
               req: Request,
               issuer: string,
-              uiProfile: any,
-              idProfile: any,
+              userInfoProfile: MergedProfile,
+              idProfile: Profile,
               context: AuthContext,
               idToken: JwtToken,
               accessToken: JwtToken,
@@ -342,13 +342,30 @@ declare namespace OpenIDConnectStrategy {
           ) => void);
 
     /**
-     * Authenticated user's profile
+     * User profile parsed from id token claims or /userInfo endpoint
      */
-    interface Profile extends passportStrategy.Profile {
+    interface Profile {
+        /** User id within OIDC provider */
+        id: string;
+        displayName?: string;
+        /** User preferred_name in jwt claim */
+        username?: string;
+        name?: {
+            giveName?: string;
+            familyName?: string;
+            middleName?: string;
+        };
+        emails?: { value: string; type?: string }[];
         /**
-         * Profile's object id within idp store.
+         * Profile's object id for OPs that supports it
          */
         oid?: string;
+    }
+
+    /** Extension of {@link Profile} that also carries raw payload from /userInfo query */
+    interface MergedProfile extends Profile {
+        _raw?: any;
+        _body?: any;
     }
 
     /**
