@@ -59,8 +59,6 @@ declare class OpenIDConnectStrategy extends passportStrategy.Strategy {
     authorizationParams(options?: any): object;
 }
 
-type JwtToken = string | { [key: string]: unknown };
-
 declare namespace OpenIDConnectStrategy {
     type Strategy = OpenIDConnectStrategy;
     const Strategy: typeof OpenIDConnectStrategy;
@@ -257,15 +255,15 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
+              idToken: string,
               done: VerifyCallback
           ) => void)
         | ((
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               done: VerifyCallback
           ) => void)
@@ -273,8 +271,8 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               params: any,
               done: VerifyCallback
@@ -284,8 +282,8 @@ declare namespace OpenIDConnectStrategy {
               uiProfile: MergedProfile,
               idProfile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               params: any,
               done: VerifyCallback
@@ -308,7 +306,7 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
+              idToken: string,
               done: VerifyCallback
           ) => void)
         | ((
@@ -316,8 +314,8 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               done: VerifyCallback
           ) => void)
@@ -326,8 +324,8 @@ declare namespace OpenIDConnectStrategy {
               issuer: string,
               profile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               params: any,
               done: VerifyCallback
@@ -338,8 +336,8 @@ declare namespace OpenIDConnectStrategy {
               uiProfile: MergedProfile,
               idProfile: Profile,
               context: AuthContext,
-              idToken: JwtToken,
-              accessToken: JwtToken,
+              idToken: string,
+              accessToken: string,
               refreshToken: string,
               params: any,
               done: VerifyCallback
