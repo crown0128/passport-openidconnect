@@ -28,7 +28,9 @@
     "main": "./lib",
     "types": "./lib/index.d.ts",
     "scripts": {
-        "test": "mocha --reporter spec --require test/bootstrap/node test/*.test.js test/**/*.test.js"
+        "test": "mocha --reporter spec --require test/bootstrap/node test/*.test.js test/**/*.test.js",
+        "lint": "./node_modules/.bin/eslint ./lib",
+        "prettify": "./node_modules/.bin/prettier --write ./lib/**/* ./test/**/*"
     },
     "dependencies": {
         "oauth": "~0.9.0",

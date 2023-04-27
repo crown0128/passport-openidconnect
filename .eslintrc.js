@@ -1,10 +1,12 @@
 module.exports = {
     root: true,
     env: {
-        chai: true,
         es6: true,
         mocha: true,
         node: true,
+    },
+    globals: {
+        expect: "readonly",
     },
     parserOptions: {
         sourceType: "module",
@@ -12,6 +14,7 @@ module.exports = {
     extends: ["eslint:recommended", "prettier"],
     ignorePatterns: ["node_modules", "build"],
     rules: {
+        "no-inner-declarations": "off",
         "no-unused-vars": "warn",
     },
 };
