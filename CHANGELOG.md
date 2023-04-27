@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed
+
+- fix: eslintrc is broken
+- docs: more jsdoc fix
+
 ## v1.0.0-beta5 (2023-04-27)
 
 ### Changed
