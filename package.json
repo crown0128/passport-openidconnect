@@ -22,9 +22,6 @@
     },
     "license": "MIT",
     "author": "Jared Hanson <jaredhanson@gmail.com> (http://www.jaredhanson.net/)",
-    "contributors": [
-        "GovTechSG"
-    ],
     "main": "./lib",
     "types": "./lib/index.d.ts",
     "scripts": {
