@@ -12,7 +12,7 @@ This module lets you authenticate using OpenID Connect in your Node.js applicati
 npm install @techpass/passport-openidconnect
 ```
 
-> If you are coding in typescript, this library has native typings support. But you will need to separately install type definitions for `express` and `passport-strategy` as there is a dependency on them.
+> If you are coding in typescript, this library has native typings support. But you may need to install type definitions for `express` and `passport-strategy` separately as there is a dependency on them.
 >
 > To install these typings from the [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) project run: `npm i -D @types/express @types/passport-strategy`.
 

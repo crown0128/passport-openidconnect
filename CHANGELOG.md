@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-### v1.0.0-beta4 (2023-04-26)
+## v1.0.0-beta5 (2023-04-27)
+
+### Changed
+
+- fix: user object should be defined by application
+- fix: token type should be string as they are unparsed
+
+## v1.0.0-beta4 (2023-04-26)
 
 - fix: define Profile interface locally
 - docs: clean up jsdoc for verify function

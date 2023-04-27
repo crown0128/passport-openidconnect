@@ -1,6 +1,6 @@
 {
     "name": "@techpass/passport-openidconnect",
-    "version": "1.0.0-beta4",
+    "version": "1.0.0-beta5",
     "description": "OpenID Connect authentication strategy for Passport.",
     "keywords": [
         "auth",
