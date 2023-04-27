@@ -231,7 +231,7 @@ declare namespace OpenIDConnectStrategy {
      * @see https://www.passportjs.org/concepts/authentication/strategies/
      *
      * @param err - Either an {@link Error} object or string message. Null when no error.
-     * @param user - User object returned by application's verify function.
+     * @param user - User object defined by the application or false if authentication fails at app.
      * @param info - Optional argument with additional user information.
      */
     type VerifyCallback = (
