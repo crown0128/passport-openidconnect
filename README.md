@@ -1,4 +1,4 @@
-# Passport OIDC Connect
+# Passport OpenID Connect
 
 > **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
 
@@ -18,7 +18,7 @@ npm install @techpass/passport-openidconnect
 
 ## Usage
 
-#### Configure Strategy
+### Configure Strategy
 
 The OpenID Connect authentication strategy authenticates users using their account at an OpenID Provider (OP). The strategy needs to be configured with the provider's endpoints, in order to function properly. Consult the provider's documentation for the locations of these endpoints and instructions on how to register a client.
 
@@ -98,18 +98,22 @@ interface StrategyOptions {
 }
 ```
 
-The strategy constructor also takes a `verify` function as an argument, with the following [overloads](./lib/index.d.ts#L244).
+### Verify Function
 
-The `issuer` parameter is set to an identifier for the OP and `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP.
+The strategy constructor also takes a `verify` function as an argument, which is responsible for processing the authenticated user info that the OP returns.
+
+The function accepts `issuer`, `profile` and `done` callback as arguments. `issuer` is set to an identifier for the OP and `profile` contains the user's [profile information](https://www.passportjs.org/reference/normalized-profile/) stored in their account at the OP.
+
+The `done` [callback](./lib/strategy.js#L20) is invoked to end processing for the middleware and return either an error a user object that is local to the application together with any additional auth info.
 
 > Depending on `skipUserProfile` and arity of `verify` function, the returning `profile` may contain:
 >
 > - data parse from id_token claim
 > - merge data from both id_token claim & userInfo endpoint
 >
-> Instead of a single `profile` instance, you can get the strategy to return profile from id_token and userInfo endpoint separately. They will return as `idProfile` and `userInfoProfile`.
-
-The function is responsible for processing the authenticated user info that the OP returns, and invoking the `done` callback.
+> Instead of a single `profile` instance, you can get the strategy to return profile from id_token and userInfo endpoint separately. They will return as `idProfile` and `uiProfile`.
+>
+> Check out the [overloads](./lib/strategy.js#L43) available for the function in the code for more info.
 
 Typically, when the account is logging in for the first time, a new user record is created in the application. On subsequent logins, the existing user record will be found via its relation to the OP account.
 
