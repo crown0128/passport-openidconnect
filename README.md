@@ -196,7 +196,7 @@ passport.use(
 );
 ```
 
-#### Define Routes
+### Define Routes
 
 Two routes are needed in order to allow users to log in with their account at an OP. The first route redirects the user to the OP, where they will authenticate:
 
@@ -229,12 +229,15 @@ app.get(
 
   Illustrates how to use the OpenID Connect strategy to integrate with [Auth0](https://auth0.com/) in an Express application. For developers new to Passport and getting started, a [tutorial](https://www.passportjs.org/tutorials/auth0/) is available.
 
+## Changelog
+
+See [CHANGELOG](./CHANGELOG.md).
+
 ## Credits
 
-- [Jared Hansen](http://github.com/jaredhanson)
+- Original Author: [Jared Hansen](http://github.com/jaredhanson)
+- Fork Contributor(s): [GovTechSG](https://github.com/GovTechSG)
 
 ## License
 
-[The MIT License](https://opensource.org/licenses/MIT)
-
-Copyright (c) 2011-2022 Jared Hanson <[https://www.jaredhanson.me/](https://www.jaredhanson.me/)>
+See [LICENSE](./LICENSE) for more info.
