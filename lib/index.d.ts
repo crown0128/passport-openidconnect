@@ -84,8 +84,8 @@ declare namespace OpenIDConnectStrategy {
      * Callback function to pass into {@link SessionStore.verify | SessionStore.verify()}
      *
      * @param err - Error object if the store function encounters any error, null otherwise.
-     * @param ctx - Auth session context
-     * @param state - Verified session state
+     * @param ctx - Passes a valid {@link SessionContext} object or false
+     * @param state - Stored app state
      */
     type SessionVerifyCallback = (
         err: Error | null,
@@ -136,12 +136,12 @@ declare namespace OpenIDConnectStrategy {
          * value generated earlier and stored in the session.
          *
          * @param req - Request object of the incoming http request
-         * @param reqState - Generated uuid string that identifies a unique auth session across multiple requests to OIDC provider
+         * @param reqState - Generated uuid string that identifies a unique session across multiple requests to OIDC provider
          * @param cb - {@link SessionVerifyCallback} to execute after storing session
          */
         verify(
             req: express.Request,
-            reqState: string,
+            handle: string,
             cb: SessionVerifyCallback
         ): void;
     }
@@ -371,7 +371,10 @@ declare namespace OpenIDConnectStrategy {
     }
 
     /**
-     * Options available to pass {@link OpenIDConnectStrategy.authenticate | Strategy.autheticate()}
+     * Options available to pass {@link OpenIDConnectStrategy.authenticate | Strategy.authenticate()}
+     * These values will overwrite those passed during instantiation of the Strategy object.
+     *
+     * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
      */
     interface AuthenticateOptions {
         callbackURL?: string | undefined;
