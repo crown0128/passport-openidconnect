@@ -1,11 +1,14 @@
 # Changelog
 
-## Unreleased
+## v1.0.0 (2023-05-12) - Official Release
 
 ### Changed
 
+- fix: use `const` and `let` instead of `var`
 - fix: eslintrc is broken
-- docs: more jsdoc fix
+- docs: mulitple touch ups in many areas
+- chore: add `nyc` as code coverage tool
+- chore: clean up unused pkgs
 
 ## v1.0.0-beta5 (2023-04-27)
 
