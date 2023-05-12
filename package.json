@@ -43,7 +43,6 @@
         "mocha": "^10.2.0",
         "nyc": "^15.1.0",
         "prettier": "^2.8.4",
-        "proxyquire": "^1.7.10",
         "sinon": "^1.17.6"
     },
     "engines": {
