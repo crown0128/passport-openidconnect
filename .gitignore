@@ -1,5 +1,6 @@
 docs/
 reports/
+.nyc_output/
 
 # Mac OS X
 .DS_Store

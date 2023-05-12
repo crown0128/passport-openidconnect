@@ -26,6 +26,7 @@
     "types": "./lib/index.d.ts",
     "scripts": {
         "test": "mocha --reporter spec --require test/bootstrap/node test/*.test.js test/**/*.test.js",
+        "coverage": "nyc mocha --reporter min --require test/bootstrap/node test/*.test.js test/**/*.test.js",
         "lint": "./node_modules/.bin/eslint ./lib",
         "prettify": "./node_modules/.bin/prettier --write ./lib/**/* ./test/**/*"
     },
@@ -39,8 +40,8 @@
         "eslint": "^8.35.0",
         "eslint-config-prettier": "^8.7.0",
         "jws": "^4.0.0",
-        "make-node": "^0.3.0",
         "mocha": "^10.2.0",
+        "nyc": "^15.1.0",
         "prettier": "^2.8.4",
         "proxyquire": "^1.7.10",
         "sinon": "^1.17.6"

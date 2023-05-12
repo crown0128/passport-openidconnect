@@ -3,6 +3,7 @@ docs/
 examples/
 reports/
 test/
+.nyc_output/
 
 .github/
 .jshintrc
