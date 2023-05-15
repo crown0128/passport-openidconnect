@@ -20,8 +20,8 @@ jobs:
       - run: npm publish --tag alpha --access public
         if: contains(env.NPM_TAG, 'alpha')
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GOVTECH }}
       - run: npm publish --tag beta --access public
         if: contains(env.NPM_TAG, 'beta')
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GOVTECH }}
