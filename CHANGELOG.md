@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.1 (2023-05-15)
+
+> There is no change to the codebase, just a version bump to publish to the new npm organisation.
+
+### Changed
+
+- chore: update npm organisation from `@techpass` to `@govtechsg`
+- chore: update github actions
+
 ## v1.0.0 (2023-05-12) - Official Release
 
 ### Changed

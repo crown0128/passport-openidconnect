@@ -2,14 +2,16 @@
 
 > **Note**: Fork of [Jared Hansen's Passport](https://www.passportjs.org/) strategy for authenticating with [OpenID Connect](https://openid.net/connect/).
 
-[![npm (scoped)](https://img.shields.io/npm/v/@techpass/passport-openidconnect?color=blue)](https://www.npmjs.com/package/@techpass/passport-openidconnect)
+> **Note**: From v1.0.1 onwards, the library will be published under the `@govtechsg` organisation. The old packages under `@techpass` will be deprecated in time.
+
+[![npm (scoped)](https://img.shields.io/npm/v/@govtechsg/passport-openidconnect?color=blue)](https://www.npmjs.com/package/@govtechsg/passport-openidconnect)
 
 This module lets you authenticate using OpenID Connect in your Node.js applications. By plugging into Passport, OpenID Connect-based sign in can be easily and unobtrusively integrated into any application or framework that supports [Connect](https://github.com/senchalabs/connect#readme)-style middleware, including [Express](https://expressjs.com/).
 
 ## Install
 
 ```sh
-npm install @techpass/passport-openidconnect
+npm install @govtechsg/passport-openidconnect
 ```
 
 > If you are coding in typescript, this library has native typings support. But you may need to install type definitions for `express` and `passport-strategy` separately as there is a dependency on them.
@@ -120,7 +122,7 @@ Typically, when the account is logging in for the first time, a new user record 
 Because the `verify` function is supplied by the application, the app is free to use any database of its choosing. The example below illustrates usage of a SQL database.
 
 ```js
-const OpenIDConnectStrategy = require("@techpass/passport-openidconnect");
+const OpenIDConnectStrategy = require("@govtechsg/passport-openidconnect");
 
 passport.use(
   new OpenIDConnectStrategy(
